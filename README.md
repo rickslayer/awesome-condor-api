@@ -1,5 +1,6 @@
 # awesome-condor-api
 A simple lightweight API 
+**This project is designed as infrastructure rather than fully fleshed application. Your implementation should just show the process you would follow and the architecture you would implement. You are welcome to create skeleton methods/classes, then document the process that would happen in said method and return a static value (or call next method, whatever).**
 
 * [Controller](#controller)
 * [ControllerSources](#controller-sources)
@@ -9,10 +10,10 @@ A simple lightweight API
 * [Service](#service)
 
 ## Controller
+**Must be able to handle a wide variety of API methods**
 ```objc
 //controller.php 
 <?php
-
 public function add(RulesAdd $request, Service $service, $array_datas)
 {
     $response = $service->Add($array_datas);
@@ -35,59 +36,89 @@ public function remove(RulestRemove $request, Service $service)
 }
 ```
 ## Controller Sources
+**Must be able to support multiple sources at once. It needs to be as simple as possible to install a new source.**
 ```objc
 //controllerSources.php
-```
-class controllerSources()
 {
-    private $name_source;
-    private $method_source;
-    //METHODS TO ADD NEW SOURCES
-    [...]
-    
-    //Method to be overrided by child classes
-    //because each Source has to be your own method
-    public function generic_method($params)
+    //A generic class used to gives to the child classes diferent methods to the same return
+    class generic_source
+    private $SourceName;
+    private $MehotdName;
     {
-          $this->getMethod_source();  
+        function SourceExecute()
+        {
+        
+        }
     }
-    //GETTER AND SETTER METHODS
-    [...]
-}
-//source_goole_analytics.php
-
-class source_google_analytics extends controllerSources
-{
-    $object_controller = new controllerSources();
-    $response = $object_controller->Send();
-    [...]
+    //Class to send to the generic_source class a generic method
+    class send_generic_source extends generic_source
+    {
+      function __construct(){
+        parent::__construct();
+       }
     
-    return json_encode($response);
+    function SourceExecute(){
+        
+        $objcSource = new google_analytics_source());
+        $method   = $this->MethodName();
+        $result    = $objcSource->$method();
+        return $result;
+    }
+    
+    }
+    //Class to implent the new Source Example: Google Analytics Source
+    class google_analytics_source
+    {
+          $result = $this->getDataFromGoogleAnalytics();
+          return $result;
+          
+          function getDataFromGoogleAnalytics()
+          {
+            //do all the magic
+          }
+    }
+    //Script to Call google_analytics_source
+    //src_google_analitics.php
+    
+         require_once 'send_generic_source.php';
+         $newSource = new send_generic_source();
+         $newSource->setSourceName('googleAnalytics');
+         $newSource->setMethodName('getDataFromGoogleAnalytics');
+         $newSource->SourceExecute();
+    
 }
-
+```
 ## Rules
 ```objc
+//CREATE RULES TO EACH METHODS 
 public function RulesAdd(){}
-RulesGet (){}
-RulesPut(){}
-RulesRemove(){}
+public function RulesGet (){}
+public function RulesPut(){}
+public function RulesRemove(){}
 ```
 
 ## Interface
 ```objc
-Interface ServiceInterface
-[...]
 //ALL METHODS USED IN Services.php
+Interface ServiceInterface.php
+[...]
+public function get_sources();
 ```
 
 ## Repository
 ```objc
-//repository.php
-[...]
 //ALL METHODS USED TO CRUD DATA TO SERVICES.PHP
+repository.php
+[...]
+public function get_sources()
+{
+    $result = $this->selectAllData();
+   
+}
 ```
 
 ## Service
+**Must return JSON. I hate XML :-)**
 ```objc
 // services.php
 [...]
@@ -130,20 +161,5 @@ class service implements ServiceInterface
     
 }
 
-
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
