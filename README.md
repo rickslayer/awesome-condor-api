@@ -9,6 +9,7 @@ A simple lightweight API
 * [Interface](#interface)
 * [Repository](#repository)
 * [Service](#service)
+* [Error Handler](#error-handler)
 
 ## Controller
 **Must be able to handle a wide variety of API methods**
@@ -41,7 +42,7 @@ public function remove(RulestRemove $request, Service $service)
 ```objc
 //controllerSources.php
 {
-    //A generic class used to gives to the child classes diferent methods to the same return
+    //An abstract class used to gives to the classes diferent methods to the same return
     class generic_source
     private $SourceName;
     private $MehotdName;
@@ -86,6 +87,14 @@ public function remove(RulestRemove $request, Service $service)
          $newSource->setSourceName('googleAnalytics');
          $newSource->setMethodName('getDataFromGoogleAnalytics');
          $newSource->SourceExecute();
+     another source
+     //src_pixel_facebook.php
+          require_once 'send_generic_source.php';
+         $newSource = new send_generic_source();
+         $newSource->setSourceName('pixelFacebook');
+         $newSource->setMethodName('getDataFrompixelFacebook');
+         $newSource->SourceExecute();
+     
     
 }
 ```
@@ -142,8 +151,6 @@ class service implements ServiceInterface
             $result["error"] = false;
             $result["message"] = ""
             $result["data"] = array ("Google Analytics" => $result['value'], "Positive Guys" => $result['positiveGuys'];
-            
-           
           }else
           {
              $result["error"] = true;
@@ -151,6 +158,7 @@ class service implements ServiceInterface
           }
             
          return json_encode($result);
+         
          }
         catch(Exception $e){
           
@@ -160,7 +168,19 @@ class service implements ServiceInterface
     }
     
     
+    
 }
 
 ```
-
+## Error Handler
+ **Must gracefully handle errors.**
+```objc
+    private function errorHandler extends HttpException($statusCode, $msg)
+    {
+    $response = array (
+        "statusCode" => $statusCode,
+        "message"   => $msg
+        );
+        return json_encode($response);
+    }
+```
